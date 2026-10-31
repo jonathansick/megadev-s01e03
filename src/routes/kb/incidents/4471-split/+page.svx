@@ -18,13 +18,28 @@ footnotes a third thing. Read by tenant, not by subject line, the ticket holds *
 Each one now has a ticket of its own in the desk's new tracker, with the reports it covers.
 
 <Callout kind="warn">
-The queued fix is for the parser. It will not touch the other two problems, and their reports
-will keep coming in under #4471.
+Engineering closed #4471 on 5 October: the parser is fixed and the booking-v3 form is retired.
+The one-day move was not part of that work. Its ticket stays open, and its reports have nowhere
+to go now that #4471 is closed.
 </Callout>
 
 ## What #4471 holds
 
 <TicketSplit ticket={4471} />
+
+## What the desk did
+
+Engineering's update on #4471, 5 October:
+
+| problem | engineering said | what it means here |
+|---|---|---|
+| parser | **fixed** · `fix(dates): parse dd/mm for eu locales` | the fix the desk queued; its ticket is closed as done |
+| hint | **won't fix** · booking-v3 form retired | the form with the wrong hint is gone; its ticket is closed, not planned |
+| one-day-move | nothing | not a parser fix, not a form; still open |
+
+A fix for the parser and a retired form do not move a date by one day. If the three tenants
+that ran booking-v3 move to a form with the same hint, the hint problem comes back under a new
+name. Check that before calling it over.
 
 ## The three problems
 
@@ -58,11 +73,12 @@ move with it.
 
 ## What to do
 
-1. Keep the parser fix queued, and link it to its ticket.
-2. Change the booking-v3 hint, or read the field the way the hint says. Either one closes the
-   hint ticket.
-3. Open the one-day move as an investigation. Start with R-41344: one meeting, two cities, two
-   days.
+1. Investigate the one-day move. Start with R-41344: one meeting, two cities, two days. R-41620
+   came in the day before #4471 was closed, and its reporter says people have stopped reporting.
+2. Check the form the booking-v3 tenants (alder.physio, copper.studio, pale.harbour) moved to for
+   the same `MM/DD/YYYY` hint.
+3. Watch for flipped months after the parser fix. One report from any channel is a regression
+   and a new ticket, not a reopened #4471.
 4. Stop merging on subject alone. [Decision 0001](/kb/decisions/0001-dedupe-by-subject) was
    written for speed during an incident, and it is how three problems became one ticket. Merge
    on cause, with the tenant in hand.

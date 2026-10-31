@@ -19,8 +19,10 @@
     'one-day-move': 'date moves by one day',
     unplaced: 'no tenant on file',
   };
-  const issueOf = (p: Problem): string | null => (tickets.tickets as Record<string, string | null>)[p] ?? null;
+  type Ticket = { url: string; state: 'open' | 'closed'; resolution: string | null };
+  const issueOf = (p: Problem): Ticket | null => (tickets.tickets as Record<string, Ticket | undefined>)[p] ?? null;
   const issueNo = (url: string) => `#${url.split('/').pop()}`;
+  const open = $derived(groups.filter((g) => issueOf(g.problem)?.state !== 'closed'));
   const list = (n: Record<string, number>) =>
     Object.entries(n)
       .sort((a, b) => b[1] - a[1])
@@ -35,22 +37,29 @@
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>tenants</th><th>came in by</th><th>seen</th><th>ticket</th></tr>
+    <tr><th>problem</th><th>reports</th><th>tenants</th><th>came in by</th><th>seen</th><th>ticket</th><th>state</th></tr>
   </thead>
   <tbody>
     {#each groups as g (g.problem)}
-      {@const url = issueOf(g.problem)}
-      <tr>
+      {@const t = issueOf(g.problem)}
+      <tr class:open={t?.state !== 'closed'}>
         <td><code>{g.problem}</code><br /><span class="what">{NAME[g.problem]}</span></td>
         <td class="n">{g.reports.length}</td>
         <td>{g.tenants.length}</td>
         <td class="tags">{list(g.channels)}</td>
         <td>{g.firstSeen} → {g.lastSeen}</td>
-        <td>{#if url}<a href={url}>{issueNo(url)}</a>{:else}<span class="missing">not filed yet</span>{/if}</td>
+        <td>{#if t}<a href={t.url}>{issueNo(t.url)}</a>{:else}<span class="missing">not filed yet</span>{/if}</td>
+        <td class="state">{#if !t}—{:else if t.state === 'closed'}closed · {t.resolution}{:else}<strong>open</strong>{/if}</td>
       </tr>
     {/each}
   </tbody>
 </table>
+
+<p class="sum">
+  Desk closed #{ticket} on {tickets.deskClosed} ·
+  <strong>{open.length}</strong> of {groups.length} problems still open, covering
+  <strong>{open.reduce((n, g) => n + g.reports.length, 0)}</strong> reports
+</p>
 
 <p class="note">
   Intake's tag got <strong>{wrongTags}</strong> of {merged.length} reports wrong, because it guesses from the reporter's
@@ -65,4 +74,7 @@
   .tags { color: var(--muted); font-size: 0.85em; }
   .note { color: var(--muted); font-size: 0.85em; }
   .missing { color: var(--warn); }
+  .state { font-size: 0.85em; color: var(--muted); }
+  .open td { background: var(--warn-bg); }
+  .open .state strong { color: var(--warn); }
 </style>

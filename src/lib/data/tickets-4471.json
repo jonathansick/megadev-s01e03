@@ -1,8 +1,9 @@
 {
   "repo": "https://github.com/jonathansick/megadev-s01e03",
+  "deskClosed": "2026-10-05",
   "tickets": {
-    "parser": "https://github.com/jonathansick/megadev-s01e03/issues/1",
-    "hint": "https://github.com/jonathansick/megadev-s01e03/issues/2",
-    "one-day-move": "https://github.com/jonathansick/megadev-s01e03/issues/3"
+    "parser": { "url": "https://github.com/jonathansick/megadev-s01e03/issues/1", "state": "closed", "resolution": "fixed · fix(dates): parse dd/mm for eu locales" },
+    "hint": { "url": "https://github.com/jonathansick/megadev-s01e03/issues/2", "state": "closed", "resolution": "won't fix · booking-v3 form retired" },
+    "one-day-move": { "url": "https://github.com/jonathansick/megadev-s01e03/issues/3", "state": "open", "resolution": null }
   }
 }
