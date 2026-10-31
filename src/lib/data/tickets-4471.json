@@ -1,8 +1,8 @@
 {
   "repo": "https://github.com/jonathansick/megadev-s01e03",
   "tickets": {
-    "parser": null,
-    "hint": null,
-    "one-day-move": null
+    "parser": "https://github.com/jonathansick/megadev-s01e03/issues/1",
+    "hint": "https://github.com/jonathansick/megadev-s01e03/issues/2",
+    "one-day-move": "https://github.com/jonathansick/megadev-s01e03/issues/3"
   }
 }
