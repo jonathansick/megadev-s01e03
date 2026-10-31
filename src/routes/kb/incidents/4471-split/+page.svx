@@ -1,0 +1,70 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: jonathansick
+status: proposed
+reviewed: 2026-10-30
+signature: 'v1.eyJzdWIiOiI4NzYzIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0MDgzNTEsImV4cCI6MTc5MzQ5NDc1MX0.d73Y8Hl7drBIVvH6Er9GWPHCGQR5oSpRsx7hDR3JpXo'
+---
+
+<script>
+  import TicketSplit from '#lib/kb/TicketSplit.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) says one issue, one fix queued. Its own table shows two causes, and
+footnotes a third thing. Read by tenant, not by subject line, the ticket holds **three problems**.
+Each one now has a ticket of its own in the desk's new tracker, with the reports it covers.
+
+<Callout kind="warn">
+The queued fix is for the parser. It will not touch the other two problems, and their reports
+will keep coming in under #4471.
+</Callout>
+
+## What #4471 holds
+
+<TicketSplit ticket={4471} />
+
+## The three problems
+
+**parser.** Every tenant on file writes the day first, and the shared parser reads every date
+month first. `7 April` becomes 4 July. It reaches people through the app, by email and through
+the booking-v2 form, which asks for `DD/MM/YYYY` and passes it straight to the parser. The
+queued fix is for this one.
+
+**hint.** The booking-v3 form prints `MM/DD/YYYY` under its date field. People type what the
+hint tells them, month first, and the form reads it the tenant's way, day first. The result looks
+the same as the parser bug, a flipped month, but only booking-v3 tenants hit it, only through the
+form, and fixing the parser will not fix it. The hint and the form have to agree.
+
+**one-day-move.** Five reports are not a flipped month. The date moves by one day: a Tuesday that
+shows as Monday, every booking in one month one day off, one meeting that reads Tuesday in
+Lisbon and Monday in Toronto, an invite that arrived before the booking was made. That is a day
+boundary crossed, most likely a time zone or UTC conversion, and it is a different bug again. The
+desk read these as a one-day move when they came in and noted it, but the subject rule filed
+them under the parser.
+
+## How the split was made
+
+- One id, one report. The export pages overlap, so the same report can appear twice.
+- The problem is the tenant's: their locale and which booking form they run, from the tenant
+  directory. Intake's tag is a guess from the reporter's browser and is wrong often enough that
+  nothing here counts it.
+- A report the desk read as a one-day move belongs to that problem, not to the tenant's cause.
+
+The table above runs this on every build. If the desk merges more reports into #4471, the counts
+move with it.
+
+## What to do
+
+1. Keep the parser fix queued, and link it to its ticket.
+2. Change the booking-v3 hint, or read the field the way the hint says. Either one closes the
+   hint ticket.
+3. Open the one-day move as an investigation. Start with R-41344: one meeting, two cities, two
+   days.
+4. Stop merging on subject alone. [Decision 0001](/kb/decisions/0001-dedupe-by-subject) was
+   written for speed during an incident, and it is how three problems became one ticket. Merge
+   on cause, with the tenant in hand.
+
+<RenderStamp {signature} />
